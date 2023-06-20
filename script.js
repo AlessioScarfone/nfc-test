@@ -1,47 +1,68 @@
-async function readTag() {
-    if ("NDEFReader" in window) {
-        const ndef = new NDEFReader();
-        try {
-            updateStatus("onReading - Start")
-            await ndef.scan();
-            ndef.onreading = event => {
-                const decoder = new TextDecoder();
-                for (const record of event.message.records) {
-                    consoleLog("Record type:  " + record.recordType);
-                    consoleLog("MIME type:    " + record.mediaType);
-                    consoleLog("=== data ===\n" + decoder.decode(record.data));
-                }
-                updateStatus("onReading - END")
-            }
-        } catch (error) {
-            consoleLog(error);
-        }
-    } else {
-        consoleLog("Web NFC is not supported.");
-    }
-}
+window.onload = function () {
 
-async function writeTag() {
-    if ("NDEFReader" in window) {
-        const ndef = new NDEFReader();
-        try {
-            await ndef.write("What Web Can Do Today");
-            consoleLog("NDEF message written!");
-        } catch (error) {
-            consoleLog(error);
-        }
-    } else {
-        consoleLog("Web NFC is not supported.");
-    }
-}
+    const logElement = document.getElementById('log');
+    const statusElement = document.getElementById('status');
+    const readBtn = document.getElementById("read");
 
-function consoleLog(data) {
-    var logElement = document.getElementById('log');
-    logElement.innerHTML += data + '\n';
-};
-
-function updateStatus(data) {
-    var logElement = document.getElementById('status');
-    logElement.innerHTML += data + '\n';
+    updateStatus("INIT")
+    console.log("START - NDEFReader in window:", "NDEFReader" in window);
     
+    if (!("NDEFReader" in window)) {
+        consoleLog("Web NFC is not supported.");
+        readBtn.setAttribute("disabled", true);
+    } else {
+        readBtn.addEventListener('click', readTag);
+    }
+
+
+    updateStatus("END INIT")
+
+    async function readTag() {
+        updateStatus("Start - readTag")
+        if ("NDEFReader" in window) {
+            const ndef = new NDEFReader();
+            try {
+                updateStatus("onReading - Start")
+                await ndef.scan();
+                updateStatus("onReading - end scan")
+                ndef.onreading = event => {
+                    const decoder = new TextDecoder();
+                    for (const record of event.message.records) {
+                        consoleLog("Record type:  " + record.recordType);
+                        consoleLog("MIME type:    " + record.mediaType);
+                        consoleLog("=== data ===\n" + decoder.decode(record.data));
+                    }
+                    updateStatus("onReading - END")
+                }
+            } catch (error) {
+                consoleLog(error);
+            }
+        } else {
+            consoleLog("Web NFC is not supported.");
+            updateStatus("NOT SUPPORTED!")
+        }
+    }
+
+    async function writeTag() {
+        if ("NDEFReader" in window) {
+            const ndef = new NDEFReader();
+            try {
+                await ndef.write("What Web Can Do Today");
+                consoleLog("NDEF message written!");
+            } catch (error) {
+                consoleLog(error);
+            }
+        } else {
+            consoleLog("Web NFC is not supported.");
+        }
+    }
+
+    function consoleLog(data) {
+        logElement.innerHTML = data + '\n';
+    };
+    
+    function updateStatus(data) {
+        
+        statusElement.innerHTML = data + '\n';
+    }
 }

@@ -10,28 +10,31 @@
     <title>TEST READ NFC</title>
     <link rel="stylesheet" href="reset.css">
     <link rel="stylesheet" href="custom.css">
-    <script src="scripts.js"></script>
+    <script src="script.js"></script>
 </head>
 
 <body>
     <main class="container">
         <div>
 
-            <button onclick="readTag()">Test NFC Read</button>
+            <button id="read">Test NFC Read</button>
             <!-- <button onclick="writeTag()">Test NFC Write</button> -->
 
-            <div id="status">
-
+            <div id="status" class="el">
+                STATUS
             </div>
 
-            <pre id="log">EMPTY</pre>
+            <hr>
+
+            <div id="log"  class="el">
+                EMPTY
+            </div>
             <!-- <p><small>Based on the code snippets from <a href="https://w3c.github.io/web-nfc/#examples">specification
                 draft</a>.</small></p> -->
         </div>
 
     </main>
     <footer>
-        v0.0.1
+        v0.0.3
     </footer>
-
 </body>

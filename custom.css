@@ -3,7 +3,7 @@
     flex-direction: column;
 }
 
-#log {
+.el {
     margin: 16px 0;
 }
 
@@ -16,4 +16,8 @@ footer {
     position: fixed;
     bottom: 30px;
     right: 30px;
+}
+
+#status {
+    color: gray
 }
