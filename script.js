@@ -3,15 +3,20 @@ window.onload = function () {
     const logElement = document.getElementById('log');
     const statusElement = document.getElementById('status');
     const readBtn = document.getElementById("read");
+    const abortBtn = document.getElementById("abort");
+    const controller = new AbortController();
 
     updateStatus("INIT")
     console.log("START - NDEFReader in window:", "NDEFReader" in window);
-    
+
     if (!("NDEFReader" in window)) {
         consoleLog("Web NFC is not supported.");
         readBtn.setAttribute("disabled", true);
+        abortBtn.setAttribute("hidden", true);
     } else {
         readBtn.addEventListener('click', readTag);
+        abortBtn.addEventListener('click', () => controller.abort());
+
     }
     updateStatus("END INIT")
 
@@ -19,9 +24,10 @@ window.onload = function () {
         updateStatus("Start - readTag")
         if ("NDEFReader" in window && ndef) {
             try {
+                const signal = controller.signal;
                 const ndef = new NDEFReader();
                 updateStatus("onReading - Scan start...")
-                await ndef.scan();
+                await ndef.scan({ signal });
                 updateStatus("Scan started successfully.")
 
                 ndef.onreading = event => {
@@ -33,7 +39,7 @@ window.onload = function () {
                     }
                     updateStatus("onReading - END")
                 }
-                
+
                 ndef.onreadingerror = event => {
                     consoleLog("Error:  " + JSON.stringify(event));
                     updateStatus("onReading Error - END")
@@ -64,7 +70,7 @@ window.onload = function () {
     function consoleLog(data) {
         logElement.innerHTML = data + '\n';
     };
-    
+
     function updateStatus(data) {
         statusElement.innerHTML = data + '\n';
     }
