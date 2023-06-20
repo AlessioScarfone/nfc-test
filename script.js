@@ -15,14 +15,18 @@ window.onload = function () {
         abortBtn.setAttribute("hidden", true);
     } else {
         readBtn.addEventListener('click', readTag);
-        abortBtn.addEventListener('click', () => controller.abort());
+        abortBtn.addEventListener('click', () => {
+            updateStatus("Aborting scan...")
+            controller.abort()
+            updateStatus("Aborted")
+        });
 
     }
     updateStatus("END INIT")
 
     async function readTag() {
         updateStatus("Start - readTag")
-        if ("NDEFReader" in window && ndef) {
+        if ("NDEFReader" in window) {
             try {
                 const signal = controller.signal;
                 const ndef = new NDEFReader();
