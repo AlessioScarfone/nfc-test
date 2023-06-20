@@ -18,6 +18,10 @@ footer {
     right: 30px;
 }
 
+footer p {
+    font-weight: bold;
+}
+
 #status {
     color: gray
 }

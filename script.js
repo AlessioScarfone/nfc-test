@@ -3,7 +3,6 @@ window.onload = function () {
     const logElement = document.getElementById('log');
     const statusElement = document.getElementById('status');
     const readBtn = document.getElementById("read");
-    let ndef = undefined;
 
     updateStatus("INIT")
     console.log("START - NDEFReader in window:", "NDEFReader" in window);
@@ -12,34 +11,33 @@ window.onload = function () {
         consoleLog("Web NFC is not supported.");
         readBtn.setAttribute("disabled", true);
     } else {
-        ndef = new NDEFReader();
-        ndef.onreading = event => {
-            const decoder = new TextDecoder();
-            for (const record of event.message.records) {
-                consoleLog("Record type:  " + record.recordType);
-                consoleLog("MIME type:    " + record.mediaType);
-                consoleLog("=== data ===\n" + decoder.decode(record.data));
-            }
-            updateStatus("onReading - END")
-        }
-        
-        ndef.onreadingerror = event => {
-            consoleLog("Error:  " + JSON.stringify(event));
-            updateStatus("onReading Error - END")
-        }
         readBtn.addEventListener('click', readTag);
     }
-
-
     updateStatus("END INIT")
 
     async function readTag() {
         updateStatus("Start - readTag")
         if ("NDEFReader" in window && ndef) {
             try {
-                updateStatus("onReading - Start")
+                const ndef = new NDEFReader();
+                updateStatus("onReading - Scan start...")
                 await ndef.scan();
-                updateStatus("onReading - end scan")
+                updateStatus("Scan started successfully.")
+
+                ndef.onreading = event => {
+                    const decoder = new TextDecoder();
+                    for (const record of event.message.records) {
+                        consoleLog("Record type:  " + record.recordType);
+                        consoleLog("MIME type:    " + record.mediaType);
+                        consoleLog("=== data ===\n" + decoder.decode(record.data));
+                    }
+                    updateStatus("onReading - END")
+                }
+                
+                ndef.onreadingerror = event => {
+                    consoleLog("Error:  " + JSON.stringify(event));
+                    updateStatus("onReading Error - END")
+                }
             } catch (error) {
                 consoleLog(error);
             }
