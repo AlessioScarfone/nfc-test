@@ -2,9 +2,9 @@ async function readTag() {
     if ("NDEFReader" in window) {
         const ndef = new NDEFReader();
         try {
+            updateStatus("onReading - Start")
             await ndef.scan();
             ndef.onreading = event => {
-                updateStatus("onReading - Start")
                 const decoder = new TextDecoder();
                 for (const record of event.message.records) {
                     consoleLog("Record type:  " + record.recordType);
