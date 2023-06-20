@@ -4,12 +4,14 @@ async function readTag() {
         try {
             await ndef.scan();
             ndef.onreading = event => {
+                updateStatus("onReading - Start")
                 const decoder = new TextDecoder();
                 for (const record of event.message.records) {
                     consoleLog("Record type:  " + record.recordType);
                     consoleLog("MIME type:    " + record.mediaType);
                     consoleLog("=== data ===\n" + decoder.decode(record.data));
                 }
+                updateStatus("onReading - END")
             }
         } catch (error) {
             consoleLog(error);
@@ -37,3 +39,9 @@ function consoleLog(data) {
     var logElement = document.getElementById('log');
     logElement.innerHTML += data + '\n';
 };
+
+function updateStatus(data) {
+    var logElement = document.getElementById('status');
+    logElement.innerHTML += data + '\n';
+    
+}
