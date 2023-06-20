@@ -35,6 +35,7 @@ window.onload = function () {
                 }
 
                 ndef.onreadingerror = event => {
+                    console.log("error:", event)
                     consoleLog("Error:  " + JSON.stringify(event));
                     updateStatus("onReading Error - END")
                 }
